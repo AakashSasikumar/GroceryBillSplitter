@@ -10,6 +10,10 @@ Manually splitting your Instacart grocery bills when you share groceries with ro
 - Calculates individual shares including common items
 - Handles both delivered items and adjustments/refunds
 
+## Development Notes
+
+Type annotations, docstrings, READMEs and other code improvements were added with the assistance of the Continue extension using the Claude 3.5 Sonnet v2 model. While efforts have been made to ensure correctness, any bugs or inconsistencies in these improvements may be attributed to limitations of the LLM and the extension. Please report any issues you find.
+
 ## Installation
 
 ### Prerequisites
