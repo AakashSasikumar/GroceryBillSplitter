@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "InstacartBillSplitter"
+version = "0.1.0"
+description = "Semi-Automate splitting Instacart Bills with your roommate(s)"
+license = "MIT"
+authors = ["Aakash Sasikumar <aakash3697@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ruff = "^0.7.0"
+beautifulsoup4 = "^4.12.3"
+prettytable = "^3.11.0"
+
+[tool.ruff]
+line-length = 100
+indent-width = 4
+
+[tool.ruff.lint]
+preview = true
+select = ["ALL"]
+ignore = [
+    "EXE",    # I don't care about shebangs
+    "TD",     # Rules for TODOs in code
+    "RET504", # Unnecessary assignment in return statement
+    "RET505", # Unnecessary assignment in return statement
+    "COM812", # Missing trailing comma in Python 3.6+
+    "ANN002", # Missing type annotation for *args in method
+    "ANN003", # Missing type annotation for **kwargs in method
+    "D100",   # Missing docstrings in public module
+    "D104",   # Missing docstrings in public package
+    "INP001", # Missing an __init__.py file
+    "PLW1514",# Ensuring unicode is defined when reading files
+    "CPY",    # Copyright information and notices
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
