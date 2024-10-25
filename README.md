@@ -1,18 +1,17 @@
-# Instacart Bill Splitter
+# Grocery Bill Splitter
 
-Manually splitting your Instacart grocery bills when you share groceries with roommates can be annoying. Enter, Instacart Bill Splitter, a tool to help you mostly automate the boring process of splitting Instacart bills.
+A tool born out of sheer laziness. Presenting to you `Grocery Bill Splitter`: the ultimate grocery bill splitting tool.
 
 ## Features
 
-- Parse Instacart HTML receipts automatically  
-- Interactive CLI for splitting items between people
-- Supports multiple people
+- Parse **Instacart** HTML receipts automatically.
+- Interactive CLI for splitting items between multiple people
 - Calculates individual shares including common items
-- Handles both delivered items and adjustments/refunds
+- Handles both delivered items and adjustments/refunds (only on Instacart receipts)
 
 ## Development Notes
 
-Type annotations, docstrings, READMEs and other code improvements were added with the assistance of the Continue extension using the Claude 3.5 Sonnet v2 model. While efforts have been made to ensure correctness, any bugs or inconsistencies in these improvements may be attributed to limitations of the LLM and the extension. Please report any issues you find.
+Type annotations, docstrings, READMEs and other code improvements were added with the assistance of the Continue extension using the Claude 3.5 Sonnet v2 model. While efforts have been made to ensure correctness, any bugs or inconsistencies in these improvements may be attributed to limitations of the LLM and the extension.
 
 ## Installation
 
@@ -26,8 +25,8 @@ Type annotations, docstrings, READMEs and other code improvements were added wit
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/instacart-bill-splitter.git
-cd instacart-bill-splitter
+git clone https://github.com/yourusername/grocery-bill-splitter.git
+cd grocery-bill-splitter
 ```
 
 2. Install dependencies using Poetry:
