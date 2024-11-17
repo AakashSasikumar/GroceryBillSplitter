@@ -13,8 +13,10 @@ logger = logging.getLogger(__name__)
 class TaxModel(BaseModel):
     """Data model representing tax and fee items in a receipt."""
     name: str
-    rate: int | None
+    rate: int | None = None
     total: Decimal
+
+    metadata: dict | None = None
 
     @model_validator(mode="after")
     def validate_tax_fields(self) -> None:

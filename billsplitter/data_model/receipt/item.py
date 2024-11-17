@@ -13,9 +13,11 @@ logger = logging.getLogger(__name__)
 class ItemModel(BaseModel):
     """Data model representing an individual item in a receipt."""
     name: str
-    quantity: int | None
-    unit_price: Decimal | None
+    quantity: int | Decimal | None
+    unit_price: Decimal | None = None
     subtotal: Decimal
+
+    metadata: dict | None = None
 
     @model_validator(mode="after")
     def validate_item_fields(self) -> None:
@@ -27,13 +29,5 @@ class ItemModel(BaseModel):
 
         if self.subtotal <= Decimal(0):
             logger.warning(f"Item '{self.name}' has invalid subtotal: {self.subtotal}")
-
-        if all([self.quantity, self.unit_price]):
-            expected_subtotal = self.quantity * self.unit_price
-            if abs(expected_subtotal - self.subtotal) > Decimal("0.01"):
-                logger.warning(
-                    f"Item '{self.name}' subtotal ({self.subtotal}) doesn't match "
-                    f"quantity * unit_price ({expected_subtotal})"
-                )
 
         return self

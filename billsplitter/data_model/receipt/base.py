@@ -1,6 +1,8 @@
 # ruff: noqa: TCH001
 from __future__ import annotations
 
+from decimal import Decimal
+
 from pydantic import BaseModel
 
 from billsplitter.data_model.receipt.item import ItemModel
@@ -14,5 +16,6 @@ class ReceiptModel(BaseModel):
     """
     items: list[ItemModel]
     taxes_and_fees: list[TaxModel]
-    metadata: dict
-    subtotal: float
+    subtotal: Decimal
+
+    metadata: dict | None = None

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from prettytable import PrettyTable
 
+from billsplitter.data_model.receipt import ItemModel, ReceiptModel, TaxModel
+
 
 class BillSplitterConstants:
     """Constants used in the bill splitting process.
