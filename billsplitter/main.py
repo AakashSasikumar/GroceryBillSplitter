@@ -11,3 +11,16 @@ delivered_items = extractor.extract_bill()
 
 bill_splitter = BillSplitter(delivered_items, num_people=2, people_names=["Subho", "Aakash"])
 bill_splitter.split_bill()
+
+# import ollama
+
+# response = ollama.chat(
+#     model='llama3.2-vision',
+#     messages=[{
+#         'role': 'user',
+#         'content': 'What is in this image?',
+#         'images': ['data/receipts/images/test_receipt.png']
+#     }]
+# )
+
+# print(response)

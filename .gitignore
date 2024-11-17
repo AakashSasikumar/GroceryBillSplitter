@@ -4,3 +4,4 @@ poetry.lock
 __pycache__
 .DS_Store
 data/receipts/others
+configs/

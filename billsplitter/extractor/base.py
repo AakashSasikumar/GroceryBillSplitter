@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Literal, NoReturn
+from typing import Literal
 
 
 class BillExtractorBase(ABC):
@@ -22,11 +24,14 @@ class BillExtractorBase(ABC):
         self.bill_type = bill_type
 
     @abstractmethod
-    def extract_bill(self) -> NoReturn:
+    def extract_bill(self) -> dict:
         """Extract and process bill data from the raw input.
 
         This method must be implemented by subclasses to parse and extract
         relevant information from the bill data according to their specific format.
+
+        The returned dictionary should contain the following keys:
+            - items: A
 
         Raises:
             NotImplementedError: If the subclass does not implement this method.

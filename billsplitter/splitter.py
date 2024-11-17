@@ -92,7 +92,8 @@ class BillSplitter:
         bill_common = {}
         bill_separate = self._initialize_bill_split_dictionary()
 
-        self._display_split_instructions()
+        if display:
+            self._display_split_instructions()
         item_names = list(self.bill_data["items"].keys())
         current_item_index = 0
         while current_item_index < len(item_names):
@@ -272,32 +273,3 @@ class BillSplitter:
         print(separate_table)  # noqa: T201
         print(totals_table)  # noqa: T201
         print("Subtotal: ", sum(person_totals))  # noqa: T201
-
-
-if __name__ == "__main__":
-    from pathlib import Path
-
-    from billsplitter.extractor import InstacartExtractor
-    bill_data = Path("data/receipts/Instacart-03-04-2023.html").read_text()
-
-    extractor = InstacartExtractor(bill_data)
-    delivered_items = extractor.extract_bill()
-
-    bill_splitter = BillSplitter(extractor.extract_bill(), num_people=3)
-    bill_split = {
-        {"Person 1": {
-             "REPLACED:Thai Kitchen Red Curry Paste->Blue Dragon Thai Red Curry Paste": 4.99,
-             "Oikos Fat Free Greek Yogurt, Peach-Mango Flavour, Fruit On The Bottom, 0% M.F.": 4.49,
-             "Rooster Coconut Milk": 1.69, "Nanak's 100% Vegetarian Paneer": 6.49,
-             "Haldiram's Paneer Paratha": 6.49},
-         "Person 2": {
-             "Dove Nourishing Deep Moisture Body Wash": 9.49,
-             "President's Choice Mangoes, Strawberries & Peaches Fruit Blend": 5.49},
-         "Person 3": {
-             "Liberté 2% Greek Plain Yogurt": 7.49,
-             'Rooster Coconut Milk': 1.69,  # noqa: Q000
-             "Haldiram's Paneer Paratha": 6.49,
-             "President's Choice Organics Smooth Peanut Butter": 5.49,
-             "President's Choice Mangoes, Strawberries & Peaches Fruit Blend": 5.49}}
-    }
-    bill_splitter._display_final_split_data(bill_split)  # noqa: SLF001
