@@ -21,7 +21,11 @@ Say goodbye to sitting down with a pen and paper to figure out how to split your
 # Install the tool
 pip install git+https://github.com/AakashSasikumar/GroceryBillSplitter.git
 
-# Split a receipt
+# Split an image receipt
+# Split an image receipt (requires Anthropic API key)
+splitmybill receipt.png --anthropic-key your-key-here
+# OR use environment variable
+export ANTHROPIC_API_KEY=your-key-here
 splitmybill receipt.png
 ```
 
@@ -74,12 +78,25 @@ poetry install
 
 ### As a CLI Tool
 
-Split a receipt interactively:
-
 ```bash
+# Basic usage
 splitmybill /path/to/receipt.[html|png|jpg]
 ```
 
+For parsing receipt images (PNG, JPEG, etc.), `splitmybill` uses Claude's multimodal capabilities through the Anthropic API. You'll need an API key to use this feature:
+
+1. Get your Anthropic API key from [https://console.anthropic.com/](https://console.anthropic.com/)
+2. Provide it in one of two ways:
+   ```bash
+   # Option 1: Command line argument
+   splitmybill receipt.png --anthropic-key your-key-here
+
+   # Option 2: Environment variable
+   export ANTHROPIC_API_KEY=your-key-here
+   splitmybill receipt.png
+   ```
+
+Note: HTML receipts from Instacart don't require an API key.
 ### Interactive Splitting
 
 The CLI provides a user-friendly interactive interface for splitting bills. Here's a walkthrough of the process:
