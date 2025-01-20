@@ -1,10 +1,17 @@
 [tool.poetry]
-name = "InstacartBillSplitter"
+name = "SplitMYBill"
 version = "0.1.0"
 description = "Semi-Automate splitting Instacart Bills with your roommate(s)"
 license = "MIT"
 authors = ["Aakash Sasikumar <aakash3697@gmail.com>"]
 readme = "README.md"
+
+[tool.poetry.scripts]
+splitmybill = "splitmybill.main:app"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
 python = "^3.10"

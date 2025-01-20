@@ -38,7 +38,7 @@ def get_parser(
         **kwargs
     ) -> BillParserBase:
     if parser_type == ParserType.INSTACART:
-        return InstacartParser(bill_path, **kwargs)
+        return InstacartParser(bill_path.read_text(), **kwargs)
     elif parser_type == ParserType.ANTHROPIC:
         return AnthropicParser(bill_path, **kwargs)
     else:

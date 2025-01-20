@@ -1,15 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from pathlib import Path
 
 import typer
 from typing_extensions import Annotated
 
 from splitmybill.interface import CLISplitter
 from splitmybill.parser import ParserType, determine_parser, get_parser
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 app = typer.Typer(
     name="splitmybill",
@@ -43,5 +40,5 @@ def cli(
     splitter = CLISplitter(
         receipt=receipt_data,
     )
-    splitter.collect_split(receipt_data=receipt_data)
+    split_data = splitter.collect_split(receipt_data=receipt_data)
     splitter.display_split(split_data=split_data)
