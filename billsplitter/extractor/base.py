@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Literal
 
 
 class BillExtractorBase(ABC):
@@ -14,14 +13,6 @@ class BillExtractorBase(ABC):
     Attributes:
         bill_data: Raw bill data to be processed.
     """
-
-    def __init__(  # noqa: D107
-            self,
-            data: str,
-            bill_type: Literal["html"],
-        ) -> None:
-        self.bill_data = data
-        self.bill_type = bill_type
 
     @abstractmethod
     def extract_bill(self) -> dict:

@@ -14,8 +14,9 @@ class ReceiptModel(BaseModel):
 
     Contains lists of items and their associated taxes/fees.
     """
-    items: list[ItemModel]
-    taxes_and_fees: list[TaxModel]
-    subtotal: Decimal
+    items: list[ItemModel] | None = None
+    taxes_and_fees: list[TaxModel] | None = None
+    subtotal: Decimal | None = None
+    total: Decimal | None = None
 
     metadata: dict | None = None

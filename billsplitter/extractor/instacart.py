@@ -53,7 +53,6 @@ class InstacartExtractor(BillExtractorBase):
     def __init__(
             self,
             bill_data: str,
-            bill_type: str = "html",
     ) -> None:
         """Initialize the Instacart receipt extractor.
 
@@ -61,8 +60,7 @@ class InstacartExtractor(BillExtractorBase):
             bill_data: Raw HTML content of the Instacart receipt to be parsed.
             bill_type: Format of the bill data, defaults to "html".
         """
-        super().__init__(bill_data, bill_type)
-
+        self.bill_data = bill_data
         self._make_soup()
 
     def extract_bill(self)  -> ReceiptModel:
@@ -81,20 +79,17 @@ class InstacartExtractor(BillExtractorBase):
         """
         adjusted_items = self._extract_adjusted_items()
         found_items = self._extract_found_items()
-        taxes_and_fess, subtotal = self._extract_order_totals()
+        taxes_and_fess, subtotal, total = self._extract_order_totals()
 
         return ReceiptModel(
             items=adjusted_items + found_items,
             taxes_and_fees=taxes_and_fess,
-            subtotal=subtotal
+            subtotal=subtotal,
+            total=total
         )
 
     def _make_soup(self) -> None:
-        if self.bill_type == "html":
-            self.soup = BeautifulSoup(self.bill_data, "html.parser")
-        else:
-            msg = "Unsupported bill type"
-            raise ValueError(msg)
+        self.soup = BeautifulSoup(self.bill_data, "html.parser")
 
     def _extract_adjusted_items(self) -> list[ItemModel]:
         adjusted_table = \
@@ -183,6 +178,7 @@ class InstacartExtractor(BillExtractorBase):
     def _extract_order_totals(self) -> tuple[list[TaxModel], Decimal]:
         order_totals = []
         subtotal = None
+        total = None
         charges_table = \
             self.soup.find("table", {"class": InstacartHTMLConstants.charges_table_class})
         for item in charges_table.find_all("tr"):
@@ -198,9 +194,12 @@ class InstacartExtractor(BillExtractorBase):
                 name=str(charge_type),
                 total=Decimal(charge_amount)
             )
-            if str(charge_type) == "Total CAD":
+            if str(charge_type) == "Items Subtotal":
                 subtotal = Decimal(charge_amount)
+                continue
+            if str(charge_type) == "Total CAD":
+                total = Decimal(charge_amount)
                 continue
             order_totals.append(tax_model_item)
 
-        return order_totals, subtotal
+        return order_totals, subtotal, total

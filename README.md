@@ -1,17 +1,24 @@
 # Grocery Bill Splitter
 
-A tool born out of sheer laziness. Presenting to you `Grocery Bill Splitter`: the ultimate grocery bill splitting tool.
+A tool born out of sheer laziness. Presenting to you ... `Grocery Bill Splitter`: the ultimate grocery bill splitting tool.
+
+Say goodbye to sitting down with a pen and paper to figure out how to split a bill with your friends. Grocery Bill Splitter automatically reads receipts and helps your quickly split the bill.
 
 ## Features
 
-- Parse **Instacart** HTML receipts automatically.
-- Interactive CLI for splitting items between multiple people
-- Calculates individual shares including common items
-- Handles both delivered items and adjustments/refunds (only on Instacart receipts)
+### Receipt Parsing
 
-## Development Notes
+- **Instacart HTML Receipts**: Automatically extract items, prices, and quantities
+- **Receipt Images** (Coming Soon): Point your camera, get your split
 
-Type annotations, docstrings, READMEs and other code improvements were added with the assistance of the Continue extension using the Claude 3.5 Sonnet v2 model. While efforts have been made to ensure correctness, any bugs or inconsistencies in these improvements may be attributed to limitations of the LLM and the extension.
+### Bill Splitting
+
+- **Interactive CLI**: User-friendly interface for splitting items
+- **Flexible Attribution**: Split items between any number of people
+
+### Reports
+
+- Generate detailed split summaries
 
 ## Installation
 
@@ -25,7 +32,7 @@ Type annotations, docstrings, READMEs and other code improvements were added wit
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/grocery-bill-splitter.git
+git clone https://github.com/AakashSasikumar/GroceryBillSplitter.git
 cd grocery-bill-splitter
 ```
 
@@ -89,6 +96,18 @@ Enter the split for each item as comma-separated values:
 4.) Cheese x 1 for $5.00: 12
 ```
 
+## Road Map
+
+- Receipt image parsing
+- Mobile interface via some chatbot
+  - Maybe a Telegram bot?
+- Integration with Splitwise
+- Explaining how the bill was split through natural language
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+## Acknowledgements
+
+- Special thanks to the Continue extension and Claude 3.5 Sonnet v2 for assistance with documentation and code improvements
