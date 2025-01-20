@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 from decimal import Decimal
+from typing import TYPE_CHECKING
 
 from prettytable import PrettyTable
 
-from splitmybill.data_model.receipt import ItemModel, ReceiptModel, TaxModel
 from splitmybill.data_model.split import BillSplitModel
 from splitmybill.interface.base import BaseInterface
+
+if TYPE_CHECKING:
+    from splitmybill.data_model.receipt import ItemModel, ReceiptModel
 
 
 class CLISplitter(BaseInterface):
