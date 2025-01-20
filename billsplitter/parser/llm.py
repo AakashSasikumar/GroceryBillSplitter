@@ -7,7 +7,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage
 
 from billsplitter.data_model.receipt import ReceiptModel
-from billsplitter.extractor.base import BillExtractorBase
+from billsplitter.parser.base import BillParserBase
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -18,12 +18,14 @@ class Constants:
                           "to a JSON according to the JSON Schema")
 
 
-class AnthropicExtractor(BillExtractorBase):
+class AnthropicParser(BillParserBase):
     def __init__(
             self,
             image_path: Path,
             model_name: str = "claude-3-5-sonnet-20241022",
-            api_key: str | None = None
+            api_key: str | None = None,
+            *args,
+            **kwargs
     ):
         self.image_b64 = self._load_image(image_path)
         self.chat_model = ChatAnthropic(

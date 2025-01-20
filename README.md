@@ -1,8 +1,8 @@
-# Grocery Bill Splitter
+# Split My Bill (`splitmybill`)
 
-A tool born out of sheer laziness. Presenting to you ... `Grocery Bill Splitter`: the ultimate grocery bill splitting tool.
+A tool born out of sheer laziness. Presenting to you ... `splitmybill`: the ultimate grocery bill splitting tool.
 
-Say goodbye to sitting down with a pen and paper to figure out how to split a bill with your friends. Grocery Bill Splitter automatically reads receipts and helps your quickly split the bill.
+Say goodbye to sitting down with a pen and paper to figure out how to split your shared grocery receipt with your roommates.
 
 ## Features
 

@@ -6,7 +6,7 @@ from typing import ClassVar
 from bs4 import BeautifulSoup
 
 from billsplitter.data_model.receipt import ItemModel, ReceiptModel, TaxModel
-from billsplitter.extractor import BillExtractorBase
+from billsplitter.parser import BillParserBase
 
 
 class InstacartHTMLConstants:
@@ -39,7 +39,7 @@ class InstacartHTMLConstants:
     ignore_keys: ClassVar[list[str]] = ["Instacart+ Member Free Delivery!"]
 
 
-class InstacartExtractor(BillExtractorBase):
+class InstacartParser(BillParserBase):
     """Extractor for parsing Instacart HTML receipts.
 
     This class implements the bill extraction logic specifically for Instacart
@@ -53,12 +53,13 @@ class InstacartExtractor(BillExtractorBase):
     def __init__(
             self,
             bill_data: str,
+            *args,
+            **kwargs
     ) -> None:
         """Initialize the Instacart receipt extractor.
 
         Args:
             bill_data: Raw HTML content of the Instacart receipt to be parsed.
-            bill_type: Format of the bill data, defaults to "html".
         """
         self.bill_data = bill_data
         self._make_soup()
@@ -87,6 +88,25 @@ class InstacartExtractor(BillExtractorBase):
             subtotal=subtotal,
             total=total
         )
+
+    @classmethod
+    def is_valid_html(cls, bill_data: str) -> bool:
+        """Check if the given HTML content is parseable by InstacartParser.
+
+        Args:
+            bill_data (str): The HTML content of the receipt to check
+
+        Returns:
+            bool: True if the content appears to be a parseable Instacart receipt
+        """
+        key_markers = [
+            InstacartHTMLConstants.adjusted_items_table_class,
+            InstacartHTMLConstants.found_items_table_class,
+            InstacartHTMLConstants.charges_table_class
+        ]
+
+        matches = sum(1 for marker in key_markers if marker in bill_data)
+        return matches >= 2  # noqa: PLR2004
 
     def _make_soup(self) -> None:
         self.soup = BeautifulSoup(self.bill_data, "html.parser")
