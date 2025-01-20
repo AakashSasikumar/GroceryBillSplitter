@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from decimal import Decimal
 from typing import ClassVar
 
 from bs4 import BeautifulSoup
 
-from billsplitter.extractor import BillExtractorBase
+from splitmybill.data_model.receipt import ItemModel, ReceiptModel, TaxModel
+from splitmybill.parser import BillParserBase
 
 
 class InstacartHTMLConstants:
@@ -37,7 +39,7 @@ class InstacartHTMLConstants:
     ignore_keys: ClassVar[list[str]] = ["Instacart+ Member Free Delivery!"]
 
 
-class InstacartExtractor(BillExtractorBase):
+class InstacartParser(BillParserBase):
     """Extractor for parsing Instacart HTML receipts.
 
     This class implements the bill extraction logic specifically for Instacart
@@ -51,19 +53,18 @@ class InstacartExtractor(BillExtractorBase):
     def __init__(
             self,
             bill_data: str,
-            bill_type: str = "html",
+            *args,
+            **kwargs
     ) -> None:
         """Initialize the Instacart receipt extractor.
 
         Args:
             bill_data: Raw HTML content of the Instacart receipt to be parsed.
-            bill_type: Format of the bill data, defaults to "html".
         """
-        super().__init__(bill_data, bill_type)
-
+        self.bill_data = bill_data
         self._make_soup()
 
-    def extract_bill(self)  -> dict[str, list[dict[str, str | float]] | dict[str, float]]:
+    def extract_bill(self)  -> ReceiptModel:
         """Extract all relevant information from the Instacart receipt.
 
         Processes the HTML receipt to extract adjusted items, found items, and order totals.
@@ -79,30 +80,48 @@ class InstacartExtractor(BillExtractorBase):
         """
         adjusted_items = self._extract_adjusted_items()
         found_items = self._extract_found_items()
-        order_totals = self._extract_order_totals()
+        taxes_and_fess, subtotal, total = self._extract_order_totals()
 
-        all_items = {}
-        all_items["items"] = {**adjusted_items, **found_items}
-        all_items["order_totals"] = order_totals
-        return all_items
+        return ReceiptModel(
+            items=adjusted_items + found_items,
+            taxes_and_fees=taxes_and_fess,
+            subtotal=subtotal,
+            total=total
+        )
+
+    @classmethod
+    def is_valid_html(cls, bill_data: str) -> bool:
+        """Check if the given HTML content is parseable by InstacartParser.
+
+        Args:
+            bill_data (str): The HTML content of the receipt to check
+
+        Returns:
+            bool: True if the content appears to be a parseable Instacart receipt
+        """
+        key_markers = [
+            InstacartHTMLConstants.adjusted_items_table_class,
+            InstacartHTMLConstants.found_items_table_class,
+            InstacartHTMLConstants.charges_table_class
+        ]
+
+        matches = sum(1 for marker in key_markers if marker in bill_data)
+        return matches >= 2  # noqa: PLR2004
 
     def _make_soup(self) -> None:
-        if self.bill_type == "html":
-            self.soup = BeautifulSoup(self.bill_data, "html.parser")
-        else:
-            msg = "Unsupported bill type"
-            raise ValueError(msg)
+        self.soup = BeautifulSoup(self.bill_data, "html.parser")
 
-    def _extract_adjusted_items(self) -> dict[str, float]:
+    def _extract_adjusted_items(self) -> list[ItemModel]:
         adjusted_table = \
             self.soup.find("table",
                            {"class": InstacartHTMLConstants.adjusted_items_table_class})
-        items = {}
+        items = []
 
         if adjusted_table is None:
             return items
 
         for item in adjusted_table.select(InstacartHTMLConstants.items_block_class):
+            metadata = {}
             if "weight adjustment" in item.text:
                 info = \
                     item.select_one(InstacartHTMLConstants.items_name_class).text.strip().splitlines()
@@ -111,17 +130,18 @@ class InstacartExtractor(BillExtractorBase):
                 for data in info:
                     if "Adjustment" in data:
                         parsed_data = data.split(" ")
-                        original_quantity = parsed_data[1] + " kg"
-                        adjusted_quantity = parsed_data[4] + " kg"
+                        original_quantity = parsed_data[1]
+                        adjusted_quantity = parsed_data[4]
+                        metadata["weight_unit"] = "kg"
                 wanted += f" ({original_quantity})"
                 delivered += f" ({adjusted_quantity})"
-                quantity = adjusted_quantity
+                quantity = Decimal(adjusted_quantity)
                 item_name = f"REPLACED:{wanted}->{delivered}"
                 delivered_prices = item.select(InstacartHTMLConstants.items_delivered_price_class)
                 for price in delivered_prices:
                     if "strike" in price["class"]:
                         continue
-                    delivered_price = float(price.text.strip()[1:])
+                    delivered_price = Decimal(price.text.strip()[1:])
             elif "Refunded amount" in item.text:
                 continue
             else:
@@ -133,37 +153,52 @@ class InstacartExtractor(BillExtractorBase):
                     item.select_one(InstacartHTMLConstants.item_quantity_class).text.split("x")[0].strip()
                 item_name = f"REPLACED:{wanted}->{delivered}"
                 delivered_price = \
-                    float(item.select_one(InstacartHTMLConstants.items_delivered_price_class).text.strip()[1:])
-            items[item_name] = {
-                "price": delivered_price,
-                "quantity": quantity,
-            }
+                    item.select_one(InstacartHTMLConstants.items_delivered_price_class).text.strip()[1:]
+            items.append(
+                ItemModel(
+                    name=str(item_name),
+                    quantity=Decimal(quantity),
+                    subtotal=Decimal(delivered_price),
+                    metadata=metadata
+                )
+            )
         return items
 
-    def _extract_found_items(self) -> list[dict[str, str | float]]:
+    def _extract_found_items(self) -> list[ItemModel]:
         found_table = \
             self.soup.find("table",
                            {"class": InstacartHTMLConstants.found_items_table_class})
-        items = {}
+        items = []
         for item in found_table.select(InstacartHTMLConstants.items_block_class):
+            metadata = {}
             delivered = \
                 item.select_one(InstacartHTMLConstants.items_name_class).text.strip().splitlines()[0]
             prices = item.select(InstacartHTMLConstants.items_price_class)
             for price_soup in prices:
                 if "strike" in price_soup["class"]:
                     continue
-                price = float(price_soup.text.strip()[1:])
+                price = Decimal(price_soup.text.strip()[1:])
             quantity = \
-                item.select_one(InstacartHTMLConstants.item_quantity_class).text.split("x")[0].strip()
-
-            items[delivered] = {
-                "price": price,
-                "quantity": quantity
-            }
+                item.select_one(InstacartHTMLConstants.item_quantity_class).text.split("x")[0].strip().split()
+            if len(quantity) > 1:
+                metadata["weight_unit"] = quantity[1]
+                quantity = quantity[0]
+            else:
+                quantity = Decimal(quantity[0])
+            items.append(
+                ItemModel(
+                    name=str(delivered),
+                    quantity=Decimal(quantity),
+                    subtotal=Decimal(price),
+                    metadata=metadata
+                )
+            )
         return items
 
-    def _extract_order_totals(self)  -> dict[str, float]:
-        order_totals = {}
+    def _extract_order_totals(self) -> tuple[list[TaxModel], Decimal]:
+        order_totals = []
+        subtotal = None
+        total = None
         charges_table = \
             self.soup.find("table", {"class": InstacartHTMLConstants.charges_table_class})
         for item in charges_table.find_all("tr"):
@@ -174,8 +209,17 @@ class InstacartExtractor(BillExtractorBase):
 
             raw_amount = item.select_one(InstacartHTMLConstants.charge_amount_class).text.strip()
             raw_amount = raw_amount.replace("$", "")
-            charge_amount = float(raw_amount)
-            order_totals[charge_type] = charge_amount
+            charge_amount = Decimal(raw_amount)
+            tax_model_item = TaxModel(
+                name=str(charge_type),
+                total=Decimal(charge_amount)
+            )
+            if str(charge_type) == "Items Subtotal":
+                subtotal = Decimal(charge_amount)
+                continue
+            if str(charge_type) == "Total CAD":
+                total = Decimal(charge_amount)
+                continue
+            order_totals.append(tax_model_item)
 
-        order_totals["Final Total"] = order_totals[InstacartHTMLConstants.charge_final_name]
-        return order_totals
+        return order_totals, subtotal, total
