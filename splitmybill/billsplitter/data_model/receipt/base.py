@@ -5,8 +5,8 @@ from decimal import Decimal
 
 from pydantic import BaseModel
 
-from billsplitter.data_model.receipt.item import ItemModel
-from billsplitter.data_model.receipt.tax import TaxModel
+from splitmybill.data_model.receipt.item import ItemModel
+from splitmybill.data_model.receipt.tax import TaxModel
 
 
 class ReceiptModel(BaseModel):

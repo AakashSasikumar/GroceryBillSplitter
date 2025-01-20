@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 import typer
 from typing_extensions import Annotated
 
-from billsplitter.parser import ParserType, determine_parser, get_parser
-from billsplitter.interface import CLISplitter
+from splitmybill.interface import CLISplitter
+from splitmybill.parser import ParserType, determine_parser, get_parser
 
 if TYPE_CHECKING:
     from pathlib import Path

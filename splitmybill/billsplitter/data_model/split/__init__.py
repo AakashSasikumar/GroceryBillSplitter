@@ -1,0 +1,1 @@
+from splitmybill.data_model.split.billsplit import BillSplitModel

@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from pydantic import BaseModel
 
-from billsplitter.data_model.receipt import ItemModel, ReceiptModel
+from splitmybill.data_model.receipt import ItemModel, ReceiptModel
 
 
 class BillSplitModel(BaseModel):

@@ -4,8 +4,8 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from billsplitter.data_model.receipt import ReceiptModel
-    from billsplitter.data_model.split import BillSplitModel
+    from splitmybill.data_model.receipt import ReceiptModel
+    from splitmybill.data_model.split import BillSplitModel
 
 
 class BaseInterface(ABC):

@@ -61,8 +61,8 @@ poetry shell
 
 ```python
 from pathlib import Path
-from billsplitter.extractor import InstacartExtractor
-from billsplitter.splitter import BillSplitter
+from splitmybill.extractor import InstacartExtractor
+from splitmybill.splitter import BillSplitter
 
 # Load and parse the receipt
 bill_data = Path("data/receipts/your-receipt.html").read_text()

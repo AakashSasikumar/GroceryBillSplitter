@@ -1,9 +1,9 @@
 from enum import Enum
 from pathlib import Path
 
-from billsplitter.parser.base import BillParserBase
-from billsplitter.parser.instacart import InstacartParser
-from billsplitter.parser.llm import AnthropicParser
+from splitmybill.parser.base import BillParserBase
+from splitmybill.parser.instacart import InstacartParser
+from splitmybill.parser.llm import AnthropicParser
 
 __all__ = [
     "AnthropicParser",

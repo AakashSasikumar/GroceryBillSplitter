@@ -5,8 +5,8 @@ from typing import ClassVar
 
 from bs4 import BeautifulSoup
 
-from billsplitter.data_model.receipt import ItemModel, ReceiptModel, TaxModel
-from billsplitter.parser import BillParserBase
+from splitmybill.data_model.receipt import ItemModel, ReceiptModel, TaxModel
+from splitmybill.parser import BillParserBase
 
 
 class InstacartHTMLConstants:

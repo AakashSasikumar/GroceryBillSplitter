@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage
 
-from billsplitter.data_model.receipt import ReceiptModel
-from billsplitter.parser.base import BillParserBase
+from splitmybill.data_model.receipt import ReceiptModel
+from splitmybill.parser.base import BillParserBase
 
 if TYPE_CHECKING:
     from pathlib import Path

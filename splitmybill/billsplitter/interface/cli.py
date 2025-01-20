@@ -4,9 +4,9 @@ from decimal import Decimal
 
 from prettytable import PrettyTable
 
-from billsplitter.data_model.receipt import ItemModel, ReceiptModel, TaxModel
-from billsplitter.data_model.split import BillSplitModel
-from billsplitter.interface.base import BaseInterface
+from splitmybill.data_model.receipt import ItemModel, ReceiptModel, TaxModel
+from splitmybill.data_model.split import BillSplitModel
+from splitmybill.interface.base import BaseInterface
 
 
 class CLISplitter(BaseInterface):
