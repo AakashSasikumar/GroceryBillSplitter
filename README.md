@@ -21,7 +21,6 @@ Say goodbye to sitting down with a pen and paper to figure out how to split your
 # Install the tool
 pip install git+https://github.com/AakashSasikumar/GroceryBillSplitter.git
 
-# Split an image receipt
 # Split an image receipt (requires Anthropic API key)
 splitmybill receipt.png --anthropic-key your-key-here
 # OR use environment variable
