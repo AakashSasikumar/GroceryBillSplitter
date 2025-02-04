@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from enum import Enum
 from pathlib import Path
 
@@ -17,7 +19,9 @@ class ParserType(str, Enum):
     ANTHROPIC = "anthropic"
 
 
-def determine_parser(receipt_path: Path) -> ParserType:
+def determine_parser(receipt_path: Path | str) -> ParserType:
+    if isinstance(receipt_path, str):
+        receipt_path = Path(receipt_path)
     if receipt_path.suffix.lower() in {".jpg", ".jpeg", ".png"}:
         return ParserType.ANTHROPIC
     elif receipt_path.suffix.lower() == ".html":
@@ -34,9 +38,12 @@ def determine_parser(receipt_path: Path) -> ParserType:
 
 def get_parser(
         parser_type: ParserType,
-        bill_path: Path,
+        bill_path: Path | str,
         **kwargs
     ) -> BillParserBase:
+    if isinstance(bill_path, str):
+        bill_path = Path(bill_path)
+
     if parser_type == ParserType.INSTACART:
         return InstacartParser(bill_path.read_text(), **kwargs)
     elif parser_type == ParserType.ANTHROPIC:

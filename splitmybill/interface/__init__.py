@@ -1,5 +1,6 @@
-from splitmybill.interface.cli import CLISplitter
+from splitmybill.interface.cli import CLISplitter, SmartCLISplitter
 
 __all__ = [
-    "CLISplitter"
+    "CLISplitter",
+    "SmartCLISplitter",
 ]

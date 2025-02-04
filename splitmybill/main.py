@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import typer
 from typing_extensions import Annotated
 
-from splitmybill.interface import CLISplitter
+from splitmybill.interface import CLISplitter, SmartCLISplitter
 from splitmybill.parser import ParserType, determine_parser, get_parser
 
 app = typer.Typer(
@@ -45,8 +46,16 @@ def cli(
         api_key=anthropic_key
     )
     receipt_data = parser_obj.extract_bill()
-    splitter = CLISplitter(
+    splitter = SmartCLISplitter(
         receipt=receipt_data,
+        api_key=anthropic_key
     )
     split_data = splitter.collect_split(receipt_data=receipt_data)
     splitter.display_split(split_data=split_data)
+
+
+if __name__ == "__main__":
+    cli(
+        bill_path="data/receipts/images/costco_02012025.jpg",
+        anthropic_key=os.environ["ANTHROPIC_API_KEY"]
+    )
