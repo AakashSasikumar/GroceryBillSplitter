@@ -46,6 +46,9 @@ class InstacartParser(BillParserBase):
     receipts in HTML format. It parses the HTML structure to extract items,
     prices, and other relevant billing information.
 
+    This is web-scraping approach is where this entire project started off
+    from.
+
     Args:
         bill_data: Raw HTML content of the Instacart receipt.
         bill_type: Format of the bill, defaults to "html".

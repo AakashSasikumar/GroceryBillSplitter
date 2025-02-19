@@ -3,9 +3,9 @@ from __future__ import annotations
 from decimal import Decimal
 from typing import TYPE_CHECKING
 
-from langchain_anthropic import ChatAnthropic
 from prettytable import PrettyTable
 
+from splitmybill.ai_services.llm import LLMProviderFactory
 from splitmybill.data_model.split import BillSplitModel, LLMSplitResponse
 from splitmybill.interface.base import BaseInterface
 
@@ -302,16 +302,17 @@ Remember:
 
     def __init__(
             self,
-            model_name: str = "claude-3-5-sonnet-20241022",
+            model_name: str = "anthropic/claude-3-5-sonnet-20241022",
             api_key: str | None = None,
             **kwargs
     ):
         self.participants: list[str] = []
-        self.chat_model = ChatAnthropic(
-            model=model_name,
-            api_key=api_key
-        ).with_structured_output(LLMSplitResponse)
-        self.chat_history: List[Tuple[str, Any]] = []
+        self.llm = LLMProviderFactory.create_provider(
+            model_name=model_name,
+            output_data_model=LLMSplitResponse,
+            api_key=api_key,
+            keep_history=True
+        )
         self.receipt_data: ReceiptModel | None = None
 
     def collect_split(
@@ -323,7 +324,7 @@ Remember:
         self._initialize_chat_history()
 
         print(self.SPLIT_INSTRUCTIONS)
-        
+
         while True:
             instructions = input("> ").strip()
             response = self._process_instructions(instructions)
@@ -350,7 +351,7 @@ Remember:
             self.participants.append(name)
 
     def _initialize_chat_history(self) -> None:
-        self.chat_history = [
+        self.llm.history = [
             ("system", self.SYSTEM_PROMPT),
             ("human", (
                 "Here is the receipt and participant information:\n"
@@ -360,17 +361,7 @@ Remember:
         ]
 
     def _process_instructions(self, instructions: str) -> LLMSplitResponse:
-        self.chat_history.append(
-            ("human", instructions)
-        )
-
-        response: LLMSplitResponse = self.chat_model.invoke(self.chat_history)
-
-        self.chat_history.append(
-            ("assistant", str(response.model_dump()))
-        )
-
-        return response
+        return self.llm.invoke(instructions)
 
     def display_split(self, split_data: BillSplitModel) -> None:
         self._display_common_items_table(split_data)

@@ -4,5 +4,6 @@ poetry.lock
 __pycache__
 .DS_Store
 data/receipts/others
+data/receipts/_images/
 configs/
 .env

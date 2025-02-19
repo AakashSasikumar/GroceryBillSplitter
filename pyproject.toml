@@ -26,6 +26,7 @@ langchain-ollama = "^0.2.0"
 pillow = "^11.0.0"
 langchain-anthropic = "^0.3.3"
 typer = "^0.15.1"
+tenacity = "^9.0.0"
 
 [tool.ruff]
 line-length = 100
@@ -47,6 +48,7 @@ ignore = [
     "INP001", # Missing an __init__.py file
     "PLW1514",# Ensuring unicode is defined when reading files
     "CPY",    # Copyright information and notices
+    "T201",   # Print statements
 ]
 
 [tool.ruff.lint.pydocstyle]

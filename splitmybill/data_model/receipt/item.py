@@ -1,4 +1,4 @@
-# ruff: noqa: G004
+# ruff: noqa: G004, TCH003
 
 from __future__ import annotations
 
@@ -17,18 +17,24 @@ class ItemModel(BaseModel):
     )
     quantity: int | Decimal | None = Field(
         default=None,
-        description="The number of units purchased. If omitted, the quantity will be assumed to be 1"
+        description="The number of units purchased. Strictly numeric."
     )
     unit_price: Decimal | None = Field(
         default=None,
         description="The price per unit of the item."
     )
     subtotal: Decimal = Field(
-        description="The total cost for this line item (quantity * unit_price, or the final price if quantity/unit price not available)"
+        description=(
+            "The total cost for this line item (quantity * unit_price, "
+            "or the final price if quantity/unit price not available)"
+        )
     )
     metadata: dict | None = Field(
         default=None,
-        description="Additional item details like weight units, discounts applied, item category, or any other receipt-specific information"
+        description=(
+            "Additional item details like weight units, discounts applied, "
+            "item category, or any other receipt-specific information"
+        )
     )
 
     @model_validator(mode="after")
