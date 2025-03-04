@@ -27,6 +27,8 @@ pillow = "^11.0.0"
 langchain-anthropic = "^0.3.3"
 typer = "^0.15.1"
 tenacity = "^9.0.0"
+python-telegram-bot = "^21.10"
+flask = "^3.1.0"
 
 [tool.ruff]
 line-length = 100
